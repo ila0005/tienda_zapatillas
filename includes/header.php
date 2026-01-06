@@ -24,7 +24,7 @@ $logoutPath = (isset($_SESSION['tipo']) && $_SESSION['tipo']=='admin') ? '../pub
                 <?php elseif(isset($_SESSION['tipo']) && $_SESSION['tipo']=='cliente'): ?>
                     <li><a href="home.php">Inicio</a></li>
                     <li><a href="productos.php">Productos</a></li>
-                    <li><a href="carrito.php">Carrito</a></li>
+                    <li><a href="carrito.php" id="open-cart">Carrito</a></li>
                     <li><a href="historial.php">Historial</a></li>
                 <?php endif; ?>
                 <?php if(isset($_SESSION['id_usuario'])): ?>

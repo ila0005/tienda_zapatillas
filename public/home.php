@@ -21,11 +21,14 @@ $productos = getProductos();
 <h2>Productos destacados</h2>
 <div class="grid-productos">
 <?php foreach(array_slice($productos, 0, 4) as $p): ?>
+    <a class="producto-link" href="productos.php?id=<?= $p['id_producto'] ?>">
     <div class="producto">
         <img src="img/<?= $p['imagen'] ?>" alt="<?= $p['nombre'] ?>">
         <h3><?= $p['nombre'] ?></h3>
         <strong><?= $p['precio'] ?> €</strong>
     </div>
+    </a>
 <?php endforeach; ?>
 </div>
 </main>
+<?php include '../includes/footer.php'; ?>

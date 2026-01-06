@@ -11,17 +11,23 @@ $productos = getProductos();
 
 <div class="grid-productos">
 <?php foreach($productos as $p): ?>
-    <div class="producto">
+    <div class="producto" id="producto-<?= $p['id_producto'] ?>">
         <img src="img/<?= $p['imagen'] ?>" alt="<?= $p['nombre'] ?>">
         <h3><?= $p['nombre'] ?></h3>
         <p><?= $p['descripcion'] ?></p>
-        <strong><?= $p['precio'] ?> €</strong>
+        <strong class="precio"><?= $p['precio'] ?> €</strong>
 
         <?php if($p['stock'] > 0): ?>
-            <form action="agregar_carrito.php" method="POST">
-                <input type="hidden" name="id_producto" value="<?= $p['id_producto'] ?>">
-                <button class="btn">Añadir al carrito</button>
-            </form>
+            <div class="actions">
+                <input class="qty-input" type="number" min="1" max="<?= $p['stock'] ?>" value="1" aria-label="Cantidad" />
+                <button class="btn primary add-to-cart"
+                    data-id="<?= $p['id_producto'] ?>"
+                    data-nombre="<?= htmlspecialchars($p['nombre'], ENT_QUOTES) ?>"
+                    data-precio="<?= $p['precio'] ?>"
+                    data-imagen="<?= $p['imagen'] ?>"
+                    data-stock="<?= $p['stock'] ?>"
+                >Añadir al carrito</button>
+            </div>
         <?php else: ?>
             <span class="sin-stock">Sin stock</span>
         <?php endif; ?>
@@ -29,3 +35,13 @@ $productos = getProductos();
 <?php endforeach; ?>
 </div>
 </main>
+
+<?php
+// Exponer info mínima del usuario a JS para control de permisos (no sensible)
+$tipoUsuario = isset($_SESSION['tipo']) ? $_SESSION['tipo'] : '';
+$usuarioLogueado = isset($_SESSION['id_usuario']) ? true : false;
+?>
+<script>
+    const USER = { tipo: '<?= $tipoUsuario ?>', logged: <?= $usuarioLogueado ? 'true' : 'false' ?> };
+</script>
+<?php include '../includes/footer.php'; ?>

@@ -10,6 +10,7 @@ $dsn = "mysql:host=$host;dbname=$db;charset=$charset";
 try {
     $conn = new PDO($dsn, $user, $pass);
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $pdo = $conn;
 } catch(PDOException $e) {
     echo "Error de conexión: " . $e->getMessage();
     exit;

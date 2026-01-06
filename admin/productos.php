@@ -32,8 +32,8 @@ include '../includes/header.php';
     <td><?= $p['precio'] ?> €</td>
     <td><?= $p['stock'] ?></td>
     <td>
-        <a href="producto_editar.php?id=<?= $p['id_producto'] ?>">✏️</a>
-        <a href="producto_eliminar.php?id=<?= $p['id_producto'] ?>" onclick="return confirm('¿Eliminar producto?')">🗑</a>
+        <a href="editar_producto.php?id=<?= $p['id_producto'] ?>">✏️</a>
+        <a href="eliminar_producto.php?id=<?= $p['id_producto'] ?>" onclick="return confirm('¿Eliminar producto?')">🗑</a>
     </td>
 </tr>
 <?php endforeach; ?>
