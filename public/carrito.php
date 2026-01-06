@@ -6,20 +6,17 @@ if(!isset($_SESSION['id_usuario']) || $_SESSION['tipo']!=='cliente'){
 include '../includes/header.php';
 require_once __DIR__.'/../app/logic/producto.php';
 
-// TODO: Recuperar carrito de BD (tabla carritos y detalle_pedido)
 ?>
 
 <div class="container">
 <h1>Carrito de Compras</h1>
 <p>Aquí aparecerán los productos agregados al carrito.</p>
-<!-- Tabla ejemplo -->
 </table>
 <table>
 <thead>
 <tr><th>Producto</th><th>Cantidad</th><th>Precio</th><th>Subtotal</th></tr>
 </thead>
 <tbody id="carrito-body">
-<!-- rows injected by JS -->
 </tbody>
 <tfoot>
 <tr><td colspan="3" style="text-align:right">Total:</td><td id="carrito-total">0 €</td></tr>
@@ -29,7 +26,6 @@ require_once __DIR__.'/../app/logic/producto.php';
 </div>
 
 <script>
-// Rellenar la tabla desde localStorage
 function renderCarrito() {
     const raw = localStorage.getItem('carrito');
     const tbody = document.getElementById('carrito-body');
@@ -62,26 +58,15 @@ function renderCarrito() {
 document.addEventListener('DOMContentLoaded', function() {
     renderCarrito();
     document.getElementById('confirmar-compra').addEventListener('click', function() {
-        if (!confirm('Confirmar compra?')) return;
-        const raw = localStorage.getItem('carrito');
-        if (!raw) { alert('Carrito vacío'); return; }
-        const carrito = JSON.parse(raw);
-        fetch('confirmar_compra.php', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ carrito: carrito })
-        }).then(r => r.json()).then(data => {
-            if (data.success) {
-                localStorage.removeItem('carrito');
-                // Redirigir a historial
-                window.location.href = 'historial.php';
-            } else {
-                alert('Error al confirmar: ' + (data.message || '')); 
-            }
-        }).catch(err => {
-            alert('Error de red: ' + err);
-        });
+        // Abrir el cajón lateral para confirmar (el cajón requiere dirección)
+        const openLink = document.getElementById('open-cart');
+        if (openLink) {
+            openLink.click();
+        } else {
+            alert('Abra el carrito lateral para confirmar la compra.');
+        }
     });
 });
 </script>
+<?php include '../includes/footer.php'; ?>
 </div>

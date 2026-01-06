@@ -13,9 +13,8 @@ $productos = getProductos();
 
 <main class="container">
 <section class="hero">
-    <h1>JUST DO IT.</h1>
+    <h1>TAN SOLO HAZLO.</h1>
     <p>Zapatillas diseñadas para rendir al máximo</p>
-    <a href="productos.php" class="btn-grande">Comprar ahora</a>
 </section>
 
 <h2>Productos destacados</h2>

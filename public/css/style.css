@@ -17,6 +17,7 @@
 
 *{box-sizing:border-box}
 html,body{height:100%}
+/* Hacer que el layout ocupe toda la altura y permita footer al fondo */
 body{
   margin:0;
   font-family: Inter, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
@@ -27,6 +28,7 @@ body{
   line-height:1.5;
   font-size:16px;
 }
+
 
 img{max-width:100%;display:block}
 
@@ -97,7 +99,7 @@ nav ul li a:hover {
   gap: 22px;
 }
 
-/* Unified product card */
+/* Tarjeta de producto unificada */
 .producto-card, .producto {
   background: var(--surface);
   border-radius: var(--radius);
@@ -135,7 +137,7 @@ nav ul li a:hover {
   color: var(--muted);
   text-align: center;
   overflow: hidden;
-  max-height: 6.4em; /* allow more lines so description is more visible */
+  max-height: 6.4em; /* permitir más líneas para que la descripción sea más visible */
   transition: max-height 0.22s ease;
 }
 
@@ -148,11 +150,11 @@ nav ul li a:hover {
 
 .producto form, .producto .actions, .producto-card .actions{ margin-top:auto; display:flex; gap:10px; justify-content:center }
 
-/* quantity input hidden until expanded */
+/* Input de cantidad: oculto hasta que la tarjeta se expanda */
 .qty-input{ display:none; width:64px; padding:8px; border-radius:8px; border:1px solid #ddd }
 .producto.expanded .qty-input{ display:inline-block }
 
-/* Cart drawer styles */
+/* Estilos del cajón del carrito */
 .cart-drawer{ position:fixed; inset:0; pointer-events:none; z-index:2200; }
 .cart-drawer__backdrop{ position:absolute; inset:0; background:rgba(0,0,0,0.35); opacity:0; transition:opacity .22s; }
 .cart-drawer[aria-hidden="false"] .cart-drawer__backdrop{ opacity:1; pointer-events:auto }
@@ -169,7 +171,7 @@ nav ul li a:hover {
 .cart-item .controls button{ padding:6px 8px; border-radius:6px }
 .cart-drawer__footer{ margin-top:auto; display:flex; justify-content:space-between; align-items:center; gap:12px }
 
-/* Buttons */
+/* Botones */
 .btn, button { cursor:pointer; border:0; padding:10px 16px; border-radius:10px; font-weight:600 }
 .btn.primary{ background:var(--primary); color:#fff }
 .btn.ghost{ background:transparent; color:var(--primary); border:1px solid rgba(0,0,0,0.06) }
@@ -177,7 +179,7 @@ nav ul li a:hover {
 .btn.primary:hover{ transform: translateY(-3px); }
 
 /* ===========================
-   TABLAS (Carrito / Historial)
+  TABLAS (Carrito / Historial)
 =========================== */
 table {
   width: 100%;
@@ -200,7 +202,7 @@ table th {
 }
 
 /* ===========================
-   FORMULARIOS
+  FORMULARIOS
 =========================== */
 form {
   display: flex;
@@ -246,7 +248,7 @@ form button:hover {
 }
 
 /* ===========================
-   ALERTAS
+  ALERTAS
 =========================== */
 .alert {
   background: #fde2e2;
@@ -259,7 +261,7 @@ form button:hover {
 }
 
 /* ===========================
-   FOOTER
+  FOOTER
 =========================== */
 footer {
   background: #111;
@@ -268,10 +270,10 @@ footer {
   padding: 20px 0;
   margin-top: 50px;
   box-shadow: 0 -2px 6px rgba(0,0,0,0.3);
-}
+} 
 
 /* ===========================
-   RESPONSIVE
+  RESPONSIVE
 =========================== */
 @media(max-width: 768px){
   nav ul {
@@ -290,11 +292,11 @@ footer {
   .producto-card img, .producto img{ height:140px }
 }
 
-/* Small utility */
+/* Utilidades pequeñas */
 .muted{ color:var(--muted) }
 .center{ text-align:center }
 
-/* Compatibility styles for productos listing (grid-productos / producto) */
+/* Estilos de compatibilidad para listado de productos (grid-productos / producto) */
 .grid-productos {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
@@ -328,7 +330,7 @@ footer {
   color: #444;
   text-align: center;
   overflow: hidden;
-  max-height: 3.2em; /* truncate approx 2 lines */
+  max-height: 3.2em; /* truncar aprox 2 líneas */
   transition: max-height 0.25s ease;
 }
 .producto .sin-stock {
@@ -349,4 +351,49 @@ footer {
   margin-top: auto;
   display: flex;
   justify-content: center;
+}
+
+/* ===========================
+   HISTORIAL DE PEDIDOS
+   =========================== */
+.historial-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  gap: 18px;
+  margin-top: 14px;
+}
+.pedido-card {
+  background: var(--surface);
+  border-radius: 12px;
+  padding: 14px;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.pedido-header{
+  display:flex;
+  gap:12px;
+  align-items:center;
+  justify-content:space-between;
+  flex-wrap:wrap;
+}
+.pedido-header h3{ margin:0; font-size:1.05rem }
+.pedido-meta{ font-size:0.9rem; color:var(--muted) }
+.pedido-direccion{ font-size:0.95rem; }
+.pedido-detalles th, .pedido-detalles td{ padding:10px; text-align:left }
+.pedido-detalles thead th{ background: rgba(0,0,0,0.06); color:var(--text); font-weight:700 }
+.pedido-detalles tbody td{ background: transparent }
+.pedido-detalles .prod-name{ font-weight:600 }
+
+.status-badge{ padding:6px 10px; border-radius:999px; font-weight:700; font-size:0.85rem; text-transform:capitalize }
+.status-confirmado{ background: linear-gradient(90deg,var(--accent),#d35400); color:white }
+.status-pendiente{ background: #f0f0f0; color:var(--muted) }
+.status-enviado{ background: #4aa3ff; color:white }
+.status-entregado{ background: var(--success); color:white }
+.status-cancelado{ background: var(--danger); color:white }
+
+@media(max-width:720px){
+  .historial-grid{ grid-template-columns: 1fr }
+  .pedido-header{ gap:8px }
 }

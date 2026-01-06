@@ -37,7 +37,6 @@ $productos = getProductos();
 </main>
 
 <?php
-// Exponer info mínima del usuario a JS para control de permisos (no sensible)
 $tipoUsuario = isset($_SESSION['tipo']) ? $_SESSION['tipo'] : '';
 $usuarioLogueado = isset($_SESSION['id_usuario']) ? true : false;
 ?>

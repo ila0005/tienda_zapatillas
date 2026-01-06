@@ -6,12 +6,11 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // Producto: click to expand and show full description
     const productos = document.querySelectorAll('.producto');
     function closeAllProductos() {
         productos.forEach(p => p.classList.remove('expanded'));
     }
-    // Auto-expand if URL contains ?id=123
+
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.has('id')) {
         const idToOpen = urlParams.get('id');
@@ -25,7 +24,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     productos.forEach(p => {
         p.addEventListener('click', function(e) {
-            // Don't toggle when clicking a form control (buttons/inputs/links)
             if (e.target.closest('form') || e.target.tagName === 'A' || e.target.tagName === 'BUTTON' || e.target.tagName === 'INPUT') return;
             const isExpanded = p.classList.contains('expanded');
             closeAllProductos();
@@ -36,19 +34,18 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Close expanded card when clicking outside
+    // Cerrar tarjeta al clicar fuera
     document.addEventListener('click', function(e) {
         if (!e.target.closest('.producto')) {
             closeAllProductos();
         }
     });
 
-    // Añadir al carrito en localStorage (usa la cantidad indicada si existe)
+    // Añadir al carrito
     const addButtons = document.querySelectorAll('.add-to-cart');
     addButtons.forEach(btn => {
         btn.addEventListener('click', function(e) {
             e.preventDefault();
-            // permisos: si no hay usuario o no es cliente, redirigir (misma lógica que antes)
             if (typeof USER === 'undefined' || !USER.logged || USER.tipo !== 'cliente') {
                 window.location.href = 'index.php';
                 return;
@@ -60,7 +57,6 @@ document.addEventListener('DOMContentLoaded', function() {
             const imagen = btn.getAttribute('data-imagen') || '';
             const stock = parseInt(btn.getAttribute('data-stock')) || 0;
 
-            // try to read qty input inside same .producto
             let qty = 1;
             const prodEl = btn.closest('.producto');
             if (prodEl) {
@@ -82,13 +78,13 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             localStorage.setItem('carrito', JSON.stringify(carrito));
-            // Open side drawer instead of redirecting
+            // Abrir cajón lateral en lugar de redirigir
             renderCartDrawer();
             openCartDrawer();
         });
     });
 
-    // CART DRAWER FUNCTIONS
+    // Funciones del cajón del carrito
     const cartDrawer = document.getElementById('cart-drawer');
     const cartItemsEl = document.getElementById('cart-items');
     const cartTotalEl = document.getElementById('cart-drawer-total');
@@ -126,7 +122,7 @@ document.addEventListener('DOMContentLoaded', function() {
             cartItemsEl.appendChild(div);
         });
         cartTotalEl.textContent = total.toFixed(2) + ' €';
-        // Attach handlers
+        // Añadir manejadores
         cartItemsEl.querySelectorAll('.qty-increase').forEach(b => b.addEventListener('click', function(){ changeQty(this.dataset.id, 1); }));
         cartItemsEl.querySelectorAll('.qty-decrease').forEach(b => b.addEventListener('click', function(){ changeQty(this.dataset.id, -1); }));
         cartItemsEl.querySelectorAll('.remove-item').forEach(b => b.addEventListener('click', function(){ removeItem(this.dataset.id); }));
@@ -160,25 +156,38 @@ document.addEventListener('DOMContentLoaded', function() {
         cartDrawer.setAttribute('aria-hidden','true');
     }
 
-    // Escape helper
+    // Ayudante para escapar HTML
     function escapeHtml(str){ return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
-    // Open cart from header link
+    // Abrir carrito desde enlace del header
     const openCartLink = document.getElementById('open-cart');
     if (openCartLink) {
         openCartLink.addEventListener('click', function(e){ e.preventDefault(); renderCartDrawer(); openCartDrawer(); });
     }
 
-    // Close handlers
+    // Manejadores de cierre
     document.querySelectorAll('[data-action="close"]').forEach(el => el.addEventListener('click', closeCartDrawer));
 
-    // Checkout button inside drawer
+    // Botón confirmar compra en el cajón
     const checkoutBtn = document.getElementById('checkout-btn');
     if (checkoutBtn) checkoutBtn.addEventListener('click', function(){
         if (!confirm('Confirmar compra?')) return;
         const raw = localStorage.getItem('carrito');
         if (!raw) { alert('Carrito vacío'); return; }
-        fetch('confirmar_compra.php', { method:'POST', headers:{'Content-Type':'application/json'}, body: raw ? JSON.stringify({carrito: JSON.parse(raw)}) : '{}' })
+        const carrito = JSON.parse(raw);
+        // obtener direccion seleccionada
+        const selectedAddress = (typeof addressSelect !== 'undefined' && addressSelect) ? addressSelect.value : '';
+        if (!selectedAddress) {
+            // No permitir confirmar sin dirección: solicitar crear/seleccionar una
+            alert('Debes seleccionar o crear una dirección antes de confirmar la compra.');
+            if (newAddrForm) {
+                newAddrForm.style.display = 'flex';
+                const first = document.getElementById('addr-calle'); if (first) first.focus();
+            }
+            return;
+        }
+
+        fetch('confirmar_compra.php', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({carrito: carrito, id_direccion: selectedAddress}) })
         .then(r=>r.json()).then(data=>{
             if (data.success) {
                 localStorage.removeItem('carrito');
@@ -190,6 +199,59 @@ document.addEventListener('DOMContentLoaded', function() {
         }).catch(err=>alert('Error de red: '+err));
     });
 
-    // Initial render if cart drawer exists
+    // Render inicial si existe el cajón
     if (cartItemsEl) renderCartDrawer();
+
+        // POBLAR SELECT DE DIRECCIONES Y CONTROLAR FORMA NUEVA
+        const addressSelect = document.getElementById('address-select');
+        const addAddrBtn = document.getElementById('add-address-toggle');
+        const newAddrForm = document.getElementById('new-address-form');
+        const saveAddrBtn = document.getElementById('save-address');
+        const cancelAddrBtn = document.getElementById('cancel-address');
+
+        function populateAddresses() {
+            if (!addressSelect) return;
+            addressSelect.innerHTML = '';
+            if (typeof ADDRESSES !== 'undefined' && Array.isArray(ADDRESSES) && ADDRESSES.length>0) {
+                ADDRESSES.forEach(a=>{
+                    const opt = document.createElement('option');
+                    opt.value = a.id_direccion;
+                    opt.textContent = a.calle + ' - ' + a.ciudad + ' (' + a.pais + ')';
+                    addressSelect.appendChild(opt);
+                });
+            } else {
+                const opt = document.createElement('option'); opt.value=''; opt.textContent='No hay direcciones guardadas'; addressSelect.appendChild(opt);
+            }
+        }
+        populateAddresses();
+
+        if (addAddrBtn && newAddrForm) {
+            addAddrBtn.addEventListener('click', function(e){ e.preventDefault(); newAddrForm.style.display = newAddrForm.style.display === 'none' ? 'flex' : 'none'; });
+        }
+        if (cancelAddrBtn && newAddrForm) {
+            cancelAddrBtn.addEventListener('click', function(e){ e.preventDefault(); newAddrForm.style.display = 'none'; });
+        }
+        if (saveAddrBtn) {
+            saveAddrBtn.addEventListener('click', function(e){
+                e.preventDefault();
+                const payload = {
+                    calle: document.getElementById('addr-calle').value || '',
+                    ciudad: document.getElementById('addr-ciudad').value || '',
+                    provincia: document.getElementById('addr-provincia').value || '',
+                    codigo_postal: document.getElementById('addr-cp').value || '',
+                    pais: document.getElementById('addr-pais').value || ''
+                };
+                fetch('api_direccion.php', {
+                    method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(payload)
+                }).then(r=>r.json()).then(data=>{
+                    if (data.success) {
+                        // añadir a ADDRESSES y seleccionar
+                        ADDRESSES.push(data.direccion);
+                        populateAddresses();
+                        addressSelect.value = data.id_direccion;
+                        newAddrForm.style.display = 'none';
+                    } else alert('Error guardando dirección: '+(data.message||''));
+                }).catch(err=>alert('Error de red: '+err));
+            });
+        }
 });

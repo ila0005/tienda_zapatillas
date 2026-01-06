@@ -1,6 +1,7 @@
 <?php
 session_start();
 require_once __DIR__ . '/../app/logic/usuario.php';
+include '../includes/header.php';
 
 if (isset($_SESSION['id_usuario'])) {
     header("Location: home.php");

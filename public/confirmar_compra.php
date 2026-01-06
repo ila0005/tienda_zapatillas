@@ -17,9 +17,8 @@ if (!$data || !isset($data['carrito'])) {
 }
 
 $items = $data['carrito'];
-// Normalize items: expect object map or array
+// Normalizar ítems
 if (is_object($items) || (is_array($items) && array_keys($items) !== range(0, count($items)-1))) {
-    // associative map
     $normalized = [];
     foreach ($items as $k => $v) {
         $normalized[] = [
@@ -30,11 +29,17 @@ if (is_object($items) || (is_array($items) && array_keys($items) !== range(0, co
     }
     $items = $normalized;
 } else {
-    // assume proper array
 }
 
 try {
-    $id_pedido = crearPedidoConDetalles($_SESSION['id_usuario'], $items);
+    // Requerir id_direccion: no permitir pedidos sin dirección
+    if (!isset($data['id_direccion']) || !$data['id_direccion']) {
+        echo json_encode(['success' => false, 'message' => 'Se requiere una dirección para confirmar el pedido.']);
+        exit;
+    }
+    $id_direccion = intval($data['id_direccion']);
+
+    $id_pedido = crearPedidoConDetalles($_SESSION['id_usuario'], $items, $id_direccion);
     echo json_encode(['success' => true, 'id_pedido' => $id_pedido]);
 } catch (Exception $e) {
     echo json_encode(['success' => false, 'message' => $e->getMessage()]);
