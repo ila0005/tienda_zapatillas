@@ -22,6 +22,12 @@ if (!$calle) {
     echo json_encode(['success'=>false,'message'=>'Calle requerida']); exit;
 }
 
+// Sanitizar y validar código postal: sólo dígitos
+$cp = preg_replace('/\D/','', (string)$cp);
+if ($cp === '') {
+    echo json_encode(['success'=>false,'message'=>'Código postal inválido (solo números).']); exit;
+}
+
 try {
     $stmt = $conn->prepare("INSERT INTO direcciones (id_usuario, calle, ciudad, provincia, codigo_postal, pais) VALUES (?, ?, ?, ?, ?, ?)");
     $stmt->execute([$_SESSION['id_usuario'], $calle, $ciudad, $provincia, $cp, $pais]);

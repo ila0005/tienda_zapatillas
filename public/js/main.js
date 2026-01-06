@@ -238,7 +238,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     calle: document.getElementById('addr-calle').value || '',
                     ciudad: document.getElementById('addr-ciudad').value || '',
                     provincia: document.getElementById('addr-provincia').value || '',
-                    codigo_postal: document.getElementById('addr-cp').value || '',
+                    codigo_postal: (document.getElementById('addr-cp').value || '').replace(/\D/g,''),
                     pais: document.getElementById('addr-pais').value || ''
                 };
                 fetch('api_direccion.php', {
@@ -253,5 +253,39 @@ document.addEventListener('DOMContentLoaded', function() {
                     } else alert('Error guardando dirección: '+(data.message||''));
                 }).catch(err=>alert('Error de red: '+err));
             });
+        
+            // Eliminar dirección seleccionada
+            const deleteAddrBtn = document.getElementById('delete-address-btn');
+            if (deleteAddrBtn) {
+                deleteAddrBtn.addEventListener('click', function(e){
+                    e.preventDefault();
+                    if (!addressSelect) return;
+                    const id = addressSelect.value;
+                    if (!id) { alert('No hay dirección seleccionada para eliminar.'); return; }
+                    if (!confirm('Eliminar la dirección seleccionada?')) return;
+                    fetch('api_direccion_delete.php', { method: 'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({id_direccion: id}) })
+                    .then(r=>r.json()).then(data=>{
+                        if (data.success) {
+                            // quitar de ADDRESSES
+                            if (Array.isArray(ADDRESSES)) {
+                                const idx = ADDRESSES.findIndex(a=>String(a.id_direccion)===String(id));
+                                if (idx !== -1) ADDRESSES.splice(idx,1);
+                            }
+                            populateAddresses();
+                            alert('Dirección eliminada');
+                        } else {
+                            alert('Error eliminando dirección: '+(data.message||''));
+                        }
+                    }).catch(err=>alert('Error de red: '+err));
+                });
+            }
+            // Forzar sólo dígitos en el campo código postal mientras el usuario escribe
+            const addrCp = document.getElementById('addr-cp');
+            if (addrCp) {
+                addrCp.addEventListener('input', function(){
+                    const only = this.value.replace(/\D/g,'');
+                    if (this.value !== only) this.value = only;
+                });
+            }
         }
 });

@@ -8,6 +8,7 @@ if(!isset($_SESSION['id_usuario']) || $_SESSION['tipo'] !== 'cliente'){
 }
 
 require_once __DIR__ . '/../app/logic/pedido.php';
+require_once __DIR__ . '/../app/config/db.php';
 
 $raw = file_get_contents('php://input');
 $data = json_decode($raw, true);
@@ -38,6 +39,15 @@ try {
         exit;
     }
     $id_direccion = intval($data['id_direccion']);
+
+    // Verificar que la dirección pertenezca al usuario
+    $stmt = $pdo->prepare("SELECT id_direccion FROM direcciones WHERE id_direccion = ? AND id_usuario = ? LIMIT 1");
+    $stmt->execute([$id_direccion, $_SESSION['id_usuario']]);
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+    if (!$row) {
+        echo json_encode(['success' => false, 'message' => 'Dirección no válida para este usuario.']);
+        exit;
+    }
 
     $id_pedido = crearPedidoConDetalles($_SESSION['id_usuario'], $items, $id_direccion);
     echo json_encode(['success' => true, 'id_pedido' => $id_pedido]);

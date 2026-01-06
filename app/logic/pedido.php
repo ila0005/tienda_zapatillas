@@ -5,18 +5,24 @@ function crearPedidoConDetalles($id_usuario, $items, $id_direccion = null) {
     global $conn;
     try {
         $conn->beginTransaction();
-
-        // Asegurar que haya una dirección: si no se pasa, intentar obtener una existente o crear una genérica
-        if (!$id_direccion) {
+        // Si se proporcionó id_direccion, verificar que pertenezca al usuario
+        if ($id_direccion) {
+            $stmtCheck = $conn->prepare("SELECT id_direccion FROM direcciones WHERE id_direccion = ? AND id_usuario = ? LIMIT 1");
+            $stmtCheck->execute([$id_direccion, $id_usuario]);
+            $found = $stmtCheck->fetch(PDO::FETCH_ASSOC);
+            if (!$found) {
+                throw new Exception('Dirección inválida para este usuario.');
+            }
+        } else {
+            // Si no se pasa, intentar obtener una existente
             $stmt = $conn->prepare("SELECT id_direccion FROM direcciones WHERE id_usuario = ? LIMIT 1");
             $stmt->execute([$id_usuario]);
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
             if ($row) {
                 $id_direccion = $row['id_direccion'];
             } else {
-                $stmt = $conn->prepare("INSERT INTO direcciones (id_usuario, calle, ciudad, provincia, codigo_postal, pais) VALUES (?, ?, ?, ?, ?, ?)");
-                $stmt->execute([$id_usuario, 'Sin dirección', 'Sin ciudad', 'Sin provincia', 0, 'Sin pais']);
-                $id_direccion = $conn->lastInsertId();
+                // No crear dirección genérica automáticamente: requerir explicitamente una dirección
+                throw new Exception('Se requiere una dirección para crear el pedido.');
             }
         }
 
@@ -61,7 +67,11 @@ function crearPedidoConDetalles($id_usuario, $items, $id_direccion = null) {
 
 function getPedidosByUsuario($id_usuario) {
     global $conn;
-    $stmt = $conn->prepare("SELECT * FROM pedidos WHERE id_usuario = ? ORDER BY fecha_pedido DESC");
+    $stmt = $conn->prepare("SELECT p.*, d.calle, d.ciudad, d.provincia, d.codigo_postal, d.pais
+        FROM pedidos p
+        LEFT JOIN direcciones d ON p.id_direccion = d.id_direccion
+        WHERE p.id_usuario = ?
+        ORDER BY p.fecha_pedido DESC");
     $stmt->execute([$id_usuario]);
     $pedidos = $stmt->fetchAll(PDO::FETCH_ASSOC);
     foreach ($pedidos as &$p) {

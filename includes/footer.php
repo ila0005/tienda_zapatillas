@@ -32,12 +32,13 @@ if (isset($_SESSION['tipo']) && $_SESSION['tipo'] === 'admin') {
             <select id="address-select" style="width:100%; margin:8px 0;"></select>
             <div style="display:flex; gap:8px; align-items:center; margin-bottom:8px;">
                 <button id="add-address-toggle" class="btn ghost">Agregar dirección</button>
+                <button id="delete-address-btn" class="btn ghost" style="margin-left:6px;">Eliminar dirección</button>
             </div>
             <form id="new-address-form" style="display:none; gap:8px;">
                 <input id="addr-calle" placeholder="Calle" />
                 <input id="addr-ciudad" placeholder="Ciudad" />
                 <input id="addr-provincia" placeholder="Provincia" />
-                <input id="addr-cp" placeholder="Código postal" />
+                <input id="addr-cp" placeholder="Código postal" inputmode="numeric" pattern="\d*" maxlength="10" title="Solo números" />
                 <input id="addr-pais" placeholder="País" />
                 <div style="display:flex; gap:8px;">
                     <button type="button" id="save-address" class="btn primary">Guardar</button>

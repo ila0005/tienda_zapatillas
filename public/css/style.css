@@ -2,14 +2,14 @@
    RESET Y TIPOGRAFÍA
 =========================== */
 :root{
-  --bg: #f5f5f5;
-  --surface: #ffffff;
-  --text: #222222;
-  --muted: #666666;
-  --primary: #111111;
-  --accent: #ef6c00;
-  --success: #1b8a2e;
-  --danger: #c62828;
+  --bg: #f6f0e6; /* beige claro */
+  --surface: #fffaf5; /* off-white cálido */
+  --text: #3b2f2f; /* marrón oscuro */
+  --muted: #7a6b63; /* marrón grisáceo */
+  --primary: #291b15; /* marrón muy oscuro */
+  --accent: #b36b2b; /* caramelo/marrón cálido */
+  --success: #8a5a2b; /* marrón oliva para entregado */
+  --danger: #8a2b2b; /* marrón rojizo para cancelado */
   --radius: 12px;
   --shadow-sm: 0 6px 18px rgba(0,0,0,0.08);
   --shadow-md: 0 12px 30px rgba(0,0,0,0.12);
@@ -40,8 +40,8 @@ header {
   position: sticky;
   top: 0;
   z-index: 1000;
-  background: linear-gradient(180deg, rgba(17,17,17,0.98), rgba(17,17,17,0.95));
-  color: white;
+  background: linear-gradient(180deg, rgba(41,27,21,0.98), rgba(41,27,21,0.95));
+  color: var(--surface);
   padding: 14px 0;
   box-shadow: 0 4px 18px rgba(0,0,0,0.12);
 }
@@ -68,7 +68,7 @@ nav ul {
 }
 
 nav ul li a {
-  color: white;
+  color: var(--surface);
   text-decoration: none;
   padding: 8px 14px;
   border-radius: 8px;
@@ -88,6 +88,11 @@ nav ul li a:hover {
   width: 92%;
   max-width: 1180px;
   margin: 22px auto;
+}
+
+/* Centrar los títulos principales dentro del contenedor */
+.container h1, .container h2, .container h3 {
+  text-align: center;
 }
 
 /* ===========================
@@ -196,7 +201,7 @@ table th, table td {
 }
 
 table th {
-  background: #111;
+  background: var(--primary);
   color: white;
   font-weight: 600;
 }
@@ -232,8 +237,8 @@ input:focus, select:focus, textarea:focus {
 /* Botones de formularios */
 form button {
   padding: 12px;
-  background: #111;
-  color: white;
+  background: var(--primary);
+  color: var(--surface);
   border: none;
   font-weight: bold;
   border-radius: 8px;
@@ -264,8 +269,8 @@ form button:hover {
   FOOTER
 =========================== */
 footer {
-  background: #111;
-  color: white;
+  background: var(--primary);
+  color: var(--surface);
   text-align: center;
   padding: 20px 0;
   margin-top: 50px;
@@ -387,11 +392,11 @@ footer {
 .pedido-detalles .prod-name{ font-weight:600 }
 
 .status-badge{ padding:6px 10px; border-radius:999px; font-weight:700; font-size:0.85rem; text-transform:capitalize }
-.status-confirmado{ background: linear-gradient(90deg,var(--accent),#d35400); color:white }
+.status-confirmado{ background: linear-gradient(90deg,var(--accent),#9b5a24); color:var(--surface) }
 .status-pendiente{ background: #f0f0f0; color:var(--muted) }
-.status-enviado{ background: #4aa3ff; color:white }
-.status-entregado{ background: var(--success); color:white }
-.status-cancelado{ background: var(--danger); color:white }
+.status-enviado{ background: #a67c52; color:var(--surface) }
+.status-entregado{ background: var(--success); color:var(--surface) }
+.status-cancelado{ background: var(--danger); color:var(--surface) }
 
 @media(max-width:720px){
   .historial-grid{ grid-template-columns: 1fr }
