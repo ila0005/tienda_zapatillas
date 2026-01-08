@@ -4,7 +4,7 @@ require_once '../app/logic/usuario.php';
 include '../includes/header.php';
 
 $error = '';
-
+// Procesar formulario de login
 if ($_POST) {
     $email = $_POST['email'];
     $password = $_POST['password'];

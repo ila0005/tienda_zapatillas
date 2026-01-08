@@ -3,7 +3,7 @@ session_start();
 if ($_SESSION['tipo'] !== 'admin') exit;
 
 require_once '../app/logic/producto.php';
-
+// Procesar formulario creación
 if ($_POST) {
     $imagen = $_FILES['imagen']['name'];
     move_uploaded_file($_FILES['imagen']['tmp_name'], "../public/img/$imagen");

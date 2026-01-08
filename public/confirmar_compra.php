@@ -1,7 +1,7 @@
 <?php
 session_start();
 header('Content-Type: application/json');
-
+// Verificar que haya sesión y que el usuario sea de tipo 'cliente'
 if(!isset($_SESSION['id_usuario']) || $_SESSION['tipo'] !== 'cliente'){
     echo json_encode(['success' => false, 'message' => 'No autorizado']);
     exit;
@@ -18,7 +18,7 @@ if (!$data || !isset($data['carrito'])) {
 }
 
 $items = $data['carrito'];
-// Normalizar ítems
+
 if (is_object($items) || (is_array($items) && array_keys($items) !== range(0, count($items)-1))) {
     $normalized = [];
     foreach ($items as $k => $v) {
@@ -48,7 +48,7 @@ try {
         echo json_encode(['success' => false, 'message' => 'Dirección no válida para este usuario.']);
         exit;
     }
-
+    // Crear el pedido
     $id_pedido = crearPedidoConDetalles($_SESSION['id_usuario'], $items, $id_direccion);
     echo json_encode(['success' => true, 'id_pedido' => $id_pedido]);
 } catch (Exception $e) {

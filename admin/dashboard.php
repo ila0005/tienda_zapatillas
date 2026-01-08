@@ -14,6 +14,8 @@ $pedidos = getAllPedidos();
 <p>Resumen de usuarios, productos y ventas</p>
 </div>
 
+<!-- Pedidos recientes -->
+
 <div class="container">
 <h2>Pedidos recientes</h2>
 <?php if (empty($pedidos)): ?>
@@ -47,6 +49,7 @@ $pedidos = getAllPedidos();
 <?php endif; ?>
 </div>
 
+<!-- Eliminar pedido -->
 <script>
 function deletePedido(id) {
     if (!confirm('¿Eliminar este pedido? Esta acción restaurará el stock y no se puede deshacer.')) return;

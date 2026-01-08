@@ -26,6 +26,7 @@ require_once __DIR__.'/../app/logic/producto.php';
 </div>
 
 <script>
+// Renderizar el carrito desde localStorage
 function renderCarrito() {
     const raw = localStorage.getItem('carrito');
     const tbody = document.getElementById('carrito-body');
@@ -55,10 +56,11 @@ function renderCarrito() {
     totalEl.textContent = total.toFixed(2) + ' €';
 }
 
+
 document.addEventListener('DOMContentLoaded', function() {
     renderCarrito();
     document.getElementById('confirmar-compra').addEventListener('click', function() {
-        // Abrir el cajón lateral para confirmar (el cajón requiere dirección)
+        // Abrir el carrito lateral para confirmar la compra
         const openLink = document.getElementById('open-cart');
         if (openLink) {
             openLink.click();

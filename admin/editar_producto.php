@@ -6,6 +6,7 @@ require_once '../app/logic/producto.php';
 
 $producto = getProductoById($_GET['id']);
 
+// Procesar formulario edición
 if ($_POST) {
     $imagen = $_FILES['imagen']['name'] ?: null;
 

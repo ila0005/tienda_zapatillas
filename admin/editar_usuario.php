@@ -8,10 +8,12 @@ $stmt = $pdo->prepare("SELECT * FROM usuarios WHERE id_usuario = ? LIMIT 1");
 $stmt->execute([$id]);
 $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
 
+// Si no existe el usuario, redirigir
 if (!$usuario) {
         header("Location: usuarios.php"); exit;
 }
 
+// Procesar formulario de edición
 if (isset($_POST['guardar'])) {
         $nombre = $_POST['nombre'];
         $email = $_POST['email'];

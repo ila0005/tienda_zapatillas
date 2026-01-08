@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/../config/db.php';
 
+// Obtener todos los usuarios
 function crearUsuario($nombre, $email, $password, $tipo='cliente') {
     global $conn;
     $stmt = $conn->prepare("
@@ -10,6 +11,7 @@ function crearUsuario($nombre, $email, $password, $tipo='cliente') {
     return $stmt->execute([$nombre, $email, password_hash($password, PASSWORD_DEFAULT), $tipo]);
 }
 
+// Iniciar sesión de usuario
 function loginUsuario($email, $password) {
     global $conn;
     $stmt = $conn->prepare("SELECT * FROM usuarios WHERE email = ?");

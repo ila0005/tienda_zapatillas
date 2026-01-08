@@ -5,6 +5,7 @@ if (!isset($_SESSION['id_usuario']) || $_SESSION['tipo'] !== 'admin') {
     exit;
 }
 
+// Cargar productos
 require_once '../app/logic/producto.php';
 $productos = getProductos();
 

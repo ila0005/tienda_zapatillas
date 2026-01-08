@@ -2,14 +2,14 @@
     &copy; 2026 SneakersILA
 </footer>
 <?php
-// Cargar script principal con ruta correcta según contexto (admin vs public)
+// Cargar script principal con ruta correcta según tipo de usuario
 if (isset($_SESSION['tipo']) && $_SESSION['tipo'] === 'admin') {
     $scriptPath = '../public/js/main.js';
 } else {
     $scriptPath = 'js/main.js';
 }
 ?>
-<!-- Cart drawer (client-side) -->
+
 <div id="cart-drawer" class="cart-drawer" aria-hidden="true">
     <div class="cart-drawer__backdrop" data-action="close"></div>
     <aside class="cart-drawer__panel" role="dialog" aria-label="Carrito">

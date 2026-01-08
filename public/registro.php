@@ -3,13 +3,14 @@ session_start();
 require_once __DIR__ . '/../app/logic/usuario.php';
 include '../includes/header.php';
 
+// Redirigir si ya hay sesión iniciada
 if (isset($_SESSION['id_usuario'])) {
     header("Location: home.php");
     exit;
 }
-
 $error='';
 
+// Procesar formulario de registro
 if($_SERVER['REQUEST_METHOD']=='POST'){
     if(crearUsuario($_POST['nombre'],$_POST['email'],$_POST['password'],'cliente')){
         header("Location: index.php");

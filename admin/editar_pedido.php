@@ -18,7 +18,7 @@ $stmt = $conn->prepare("SELECT * FROM direcciones WHERE id_usuario = ?");
 $stmt->execute([$pedido['id_usuario']]);
 $direcciones = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-// Procesar POST de actualización
+// Procesar formulario
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $estado = $_POST['estado'] ?? $pedido['estado'];
     $id_dir = intval($_POST['id_direccion'] ?? 0);
@@ -36,6 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
+// Mostrar formulario
 ?>
 <div class="container">
     <h1>Editar Pedido #<?php echo $pedido['id_pedido']; ?></h1>

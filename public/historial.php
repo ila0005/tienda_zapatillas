@@ -15,6 +15,7 @@ include '../includes/header.php';
 <?php include '../includes/footer.php'; ?>
 
 <script>
+// Obtener y mostrar el historial de pedidos del usuario autenticado
 async function fetchPedidos(){
     const res = await fetch('api_pedidos.php');
     const data = await res.json();
@@ -26,18 +27,22 @@ async function fetchPedidos(){
     const grid = document.createElement('div');
     grid.className = 'historial-grid';
     pedidos.forEach(p=>{
+      
         const div = document.createElement('article');
         div.className = 'pedido-card';
 
         const header = document.createElement('div');
         header.className = 'pedido-header';
+        
         const h = document.createElement('h3');
         h.textContent = `Pedido #${p.id_pedido}`;
+       
         const meta = document.createElement('div');
         meta.className = 'pedido-meta';
         meta.innerHTML = `<time>${escapeHtml(p.fecha_pedido)}</time>`;
 
         const status = document.createElement('span');
+       
         const estadoText = String(p.estado || 'pendiente');
         status.className = 'status-badge status-' + estadoText.replace(/\s+/g,'-').toLowerCase();
         status.textContent = estadoText.charAt(0).toUpperCase() + estadoText.slice(1);
@@ -53,6 +58,7 @@ async function fetchPedidos(){
 
         const addr = document.createElement('div');
         addr.className = 'pedido-direccion muted';
+       
         const addrText = [p.calle, p.ciudad, p.provincia, p.codigo_postal, p.pais].filter(Boolean).join(', ');
         addr.textContent = 'Dirección: ' + (addrText || 'Sin dirección registrada');
         div.appendChild(addr);
@@ -60,6 +66,7 @@ async function fetchPedidos(){
         const details = document.createElement('table');
         details.className = 'pedido-detalles';
         details.innerHTML = '<thead><tr><th>Producto</th><th>Cant.</th><th>Precio</th><th>Subtotal</th></tr></thead>';
+        
         const tbody = document.createElement('tbody');
         (p.detalles||[]).forEach(d=>{
             const tr = document.createElement('tr');
@@ -69,7 +76,6 @@ async function fetchPedidos(){
         });
         details.appendChild(tbody);
         div.appendChild(details);
-
         grid.appendChild(div);
     });
     container.appendChild(grid);

@@ -6,11 +6,12 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
+    // Expandir/contraer tarjetas de producto
     const productos = document.querySelectorAll('.producto');
     function closeAllProductos() {
         productos.forEach(p => p.classList.remove('expanded'));
     }
-
+    
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.has('id')) {
         const idToOpen = urlParams.get('id');
@@ -22,6 +23,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const q = el.querySelector('.qty-input'); if (q) q.focus();
         }
     }
+
     productos.forEach(p => {
         p.addEventListener('click', function(e) {
             if (e.target.closest('form') || e.target.tagName === 'A' || e.target.tagName === 'BUTTON' || e.target.tagName === 'INPUT') return;
@@ -78,7 +80,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             localStorage.setItem('carrito', JSON.stringify(carrito));
-            // Abrir cajón lateral en lugar de redirigir
             renderCartDrawer();
             openCartDrawer();
         });
@@ -89,6 +90,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const cartItemsEl = document.getElementById('cart-items');
     const cartTotalEl = document.getElementById('cart-drawer-total');
 
+    // Renderizar contenido del cajón
     function renderCartDrawer() {
         const raw = localStorage.getItem('carrito');
         const cart = raw ? JSON.parse(raw) : {};
@@ -127,7 +129,7 @@ document.addEventListener('DOMContentLoaded', function() {
         cartItemsEl.querySelectorAll('.qty-decrease').forEach(b => b.addEventListener('click', function(){ changeQty(this.dataset.id, -1); }));
         cartItemsEl.querySelectorAll('.remove-item').forEach(b => b.addEventListener('click', function(){ removeItem(this.dataset.id); }));
     }
-
+    // Cambiar cantidad de un ítem
     function changeQty(id, delta) {
         const raw = localStorage.getItem('carrito');
         if (!raw) return;
@@ -137,7 +139,7 @@ document.addEventListener('DOMContentLoaded', function() {
         localStorage.setItem('carrito', JSON.stringify(cart));
         renderCartDrawer();
     }
-
+    // Eliminar ítem del carrito
     function removeItem(id) {
         const raw = localStorage.getItem('carrito');
         if (!raw) return;
@@ -156,7 +158,7 @@ document.addEventListener('DOMContentLoaded', function() {
         cartDrawer.setAttribute('aria-hidden','true');
     }
 
-    // Ayudante para escapar HTML
+
     function escapeHtml(str){ return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
     // Abrir carrito desde enlace del header
@@ -165,7 +167,7 @@ document.addEventListener('DOMContentLoaded', function() {
         openCartLink.addEventListener('click', function(e){ e.preventDefault(); renderCartDrawer(); openCartDrawer(); });
     }
 
-    // Manejadores de cierre
+    // Cerrar cajón
     document.querySelectorAll('[data-action="close"]').forEach(el => el.addEventListener('click', closeCartDrawer));
 
     // Botón confirmar compra en el cajón
@@ -178,7 +180,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // obtener direccion seleccionada
         const selectedAddress = (typeof addressSelect !== 'undefined' && addressSelect) ? addressSelect.value : '';
         if (!selectedAddress) {
-            // No permitir confirmar sin dirección: solicitar crear/seleccionar una
+            // No permitir confirmar sin dirección
             alert('Debes seleccionar o crear una dirección antes de confirmar la compra.');
             if (newAddrForm) {
                 newAddrForm.style.display = 'flex';
@@ -202,13 +204,13 @@ document.addEventListener('DOMContentLoaded', function() {
     // Render inicial si existe el cajón
     if (cartItemsEl) renderCartDrawer();
 
-        // POBLAR SELECT DE DIRECCIONES Y CONTROLAR FORMA NUEVA
+        // Gestión de direcciones de usuario
         const addressSelect = document.getElementById('address-select');
         const addAddrBtn = document.getElementById('add-address-toggle');
         const newAddrForm = document.getElementById('new-address-form');
         const saveAddrBtn = document.getElementById('save-address');
         const cancelAddrBtn = document.getElementById('cancel-address');
-
+        
         function populateAddresses() {
             if (!addressSelect) return;
             addressSelect.innerHTML = '';
@@ -225,6 +227,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         populateAddresses();
 
+        // Mostrar/ocultar formulario nueva dirección
         if (addAddrBtn && newAddrForm) {
             addAddrBtn.addEventListener('click', function(e){ e.preventDefault(); newAddrForm.style.display = newAddrForm.style.display === 'none' ? 'flex' : 'none'; });
         }
@@ -241,7 +244,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     codigo_postal: (document.getElementById('addr-cp').value || '').replace(/\D/g,''),
                     pais: document.getElementById('addr-pais').value || ''
                 };
-                fetch('api_direccion.php', {
+                fetch('direccion.php', {
                     method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(payload)
                 }).then(r=>r.json()).then(data=>{
                     if (data.success) {
@@ -263,7 +266,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     const id = addressSelect.value;
                     if (!id) { alert('No hay dirección seleccionada para eliminar.'); return; }
                     if (!confirm('Eliminar la dirección seleccionada?')) return;
-                    fetch('api_direccion_delete.php', { method: 'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({id_direccion: id}) })
+                    fetch('direccion_delete.php', { method: 'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({id_direccion: id}) })
                     .then(r=>r.json()).then(data=>{
                         if (data.success) {
                             // quitar de ADDRESSES
@@ -279,7 +282,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     }).catch(err=>alert('Error de red: '+err));
                 });
             }
-            // Forzar sólo dígitos en el campo código postal mientras el usuario escribe
+            // Forzar sólo dígitos en el campo código postal 
             const addrCp = document.getElementById('addr-cp');
             if (addrCp) {
                 addrCp.addEventListener('input', function(){
