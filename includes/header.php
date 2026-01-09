@@ -9,7 +9,7 @@ $logoutPath = (isset($_SESSION['tipo']) && $_SESSION['tipo']=='admin') ? '../pub
 <head>
 <meta charset="UTF-8">
 <title>SneakersILA</title>
-<link rel="stylesheet" href="<?= (isset($_SESSION['tipo']) && $_SESSION['tipo']=='admin') ? '../public/css/style.css' : 'css/style.css' ?>">
+<link rel="stylesheet" href="<?= (isset($_SESSION['tipo']) && $_SESSION['tipo']=='admin') ? '/public/css/style.css' : 'css/style.css' ?>">
 </head>
 <body>
 

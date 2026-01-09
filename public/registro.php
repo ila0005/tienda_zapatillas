@@ -1,7 +1,7 @@
 <?php
 session_start();
 require_once __DIR__ . '/../app/logic/usuario.php';
-include '../includes/header.php';
+include __DIR__.'/../includes/header.php';
 
 // Redirigir si ya hay sesión iniciada
 if (isset($_SESSION['id_usuario'])) {
@@ -29,8 +29,9 @@ if($_SERVER['REQUEST_METHOD']=='POST'){
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-
+<div class="container">
 <h1>Registro</h1>
+</div>
 <?php if($error) echo "<p class='alert'>$error</p>"; ?>
 <form method="POST">
 <input type="text" name="nombre" placeholder="Nombre completo" required>

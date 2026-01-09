@@ -17,7 +17,7 @@ include '../includes/header.php';
 <script>
 // Obtener y mostrar el historial de pedidos del usuario autenticado
 async function fetchPedidos(){
-    const res = await fetch('api_pedidos.php');
+    const res = await fetch('pedidos.php');
     const data = await res.json();
     const container = document.getElementById('historial-list');
     if(!data.success){ container.innerHTML = '<p>Error al cargar pedidos.</p>'; return; }

@@ -1,16 +1,22 @@
 <?php
+// Habilitar reporte de errores para desarrollo
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+
 session_start();
-require_once '../app/logic/usuario.php';
-include '../includes/header.php';
+require_once(__DIR__ . '/../app/logic/usuario.php');
+require_once __DIR__ . '/../includes/header.php';
+
 
 $error = '';
 // Procesar formulario de login
 if ($_POST) {
     $email = $_POST['email'];
     $password = $_POST['password'];
-
     $usuario = loginUsuario($email, $password);
-
+    // Si el login es exitoso
     if ($usuario) {
         $_SESSION['id_usuario'] = $usuario['id_usuario'];
         $_SESSION['tipo'] = $usuario['tipo'];
@@ -18,7 +24,7 @@ if ($_POST) {
 
         // Redirigir según tipo
         if($usuario['tipo'] === 'admin') {
-            header("Location: ../admin/dashboard.php");
+            header("Location: /admin/dashboard.php");
         } else {
             header("Location: home.php");
         }
